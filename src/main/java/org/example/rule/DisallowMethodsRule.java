@@ -2,19 +2,16 @@ package org.example.rule;
 
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.plugins.java.api.IssuableSubscriptionVisitor;
-import org.sonar.plugins.java.api.tree.MemberSelectExpressionTree;
+import org.sonar.plugins.java.api.semantic.MethodMatchers;
 import org.sonar.plugins.java.api.tree.MethodInvocationTree;
-import org.sonar.plugins.java.api.tree.Tree;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Rule(key = "DisallowMethodsRule")
-public class DisallowMethodsRule extends IssuableSubscriptionVisitor {
+public class DisallowMethodsRule extends AbstractMethodDetection {
 
     @RuleProperty(key = "types", description = "Fully qualified names of the classes whose methods is forbidden")
     private String typesProperty = "";
@@ -33,12 +30,7 @@ public class DisallowMethodsRule extends IssuableSubscriptionVisitor {
     }
 
     @Override
-    public List<Tree.Kind> nodesToVisit() {
-        return Arrays.asList(Tree.Kind.METHOD_INVOCATION, Tree.Kind.NEW_CLASS, Tree.Kind.METHOD_REFERENCE);
-    }
-
-    @Override
-    public void visitNode(Tree tree) {
+    protected MethodMatchers getMethodInvocationMatchers() {
         if (types.isEmpty()) {
             types.addAll(split(typesProperty));
         }
@@ -47,17 +39,23 @@ public class DisallowMethodsRule extends IssuableSubscriptionVisitor {
             methods.addAll(split(methodsProperty));
         }
 
-        // TODO: add method references and constructors
-        if (tree.is(Tree.Kind.METHOD_INVOCATION)) {
-            MethodInvocationTree mit = (MethodInvocationTree) tree;
-            if (check(mit)) {
-                onMethodInvocationFound(mit);
-            }
+        if (methods.isEmpty()) {
+            return MethodMatchers.none();
         }
+        MethodMatchers.TypeBuilder typeBuilder = MethodMatchers.create();
+        MethodMatchers.NameBuilder nameBuilder;
+        if (!types.isEmpty()) {
+            nameBuilder = typeBuilder.ofTypes(types.toArray(new String[0]));
+        } else {
+            nameBuilder = typeBuilder.ofAnyType();
+        }
+        MethodMatchers.ParametersBuilder parametersBuilder = nameBuilder.names(methods.toArray(new String[0]));
+
+        return parametersBuilder.withAnyParameters().build();
     }
 
     protected void onMethodInvocationFound(MethodInvocationTree mit) {
-        reportIssue(mit, "Remove this forbidden call");
+        reportIssue(methodName(mit), "Remove this forbidden call");
     }
 
     private Set<String> split(String property) {
@@ -65,24 +63,5 @@ public class DisallowMethodsRule extends IssuableSubscriptionVisitor {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
-    }
-
-    // TODO: add check for superclasses
-    private boolean check(MethodInvocationTree mit) {
-        if (mit.methodSelect().is(Tree.Kind.MEMBER_SELECT)) {
-            MemberSelectExpressionTree mset = (MemberSelectExpressionTree) mit.methodSelect();
-            String type = mset.expression().symbolType().fullyQualifiedName();
-
-            String method = mit.methodSymbol().name();
-
-            if (types.isEmpty()) {
-                return methods.contains(method);
-            }
-
-            return types.contains(type) && methods.contains(method);
-        };
-
-        // TODO: More tests on this
-        return false;
     }
 }
