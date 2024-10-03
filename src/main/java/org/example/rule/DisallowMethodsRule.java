@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// TODO: better interface properties, mb like type:(methods),anotherType:(methods)
 @Rule(key = "DisallowMethodsRule")
 public class DisallowMethodsRule extends AbstractMethodDetection {
 
