@@ -1,0 +1,11 @@
+{
+  "title": "Disallow methods calls for specified types",
+  "type": "Bug",
+  "status": "ready",
+  "tags": [
+    "bugs",
+    "gandalf",
+    "magic"
+  ],
+  "defaultSeverity": "Critical"
+}

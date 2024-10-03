@@ -1,0 +1,24 @@
+<p>Disallow method calls for specified types.</p>
+
+<h2>Given parameters: methods - doSomething, classes - MyClass</h2>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class MyClass {
+  int doSomething(int a) { // Noncompliant
+    return 42;
+  }
+}
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+class MyClass {
+  int doSomethingOne() { // Compliant
+    return 42;
+  }
+  long doSomethingTwo(int a) { // Compliant
+    return 42L;
+  }
+}
+</pre>
