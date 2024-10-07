@@ -7,7 +7,7 @@ import org.example.util.Target;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.plugins.java.api.semantic.MethodMatchers;
-import org.sonar.plugins.java.api.tree.*;
+import org.sonar.plugins.java.api.tree.MethodInvocationTree;
 
 import java.util.Set;
 

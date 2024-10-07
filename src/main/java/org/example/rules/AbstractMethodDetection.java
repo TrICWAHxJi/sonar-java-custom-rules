@@ -2,9 +2,13 @@ package org.example.rules;
 
 import org.sonar.plugins.java.api.IssuableSubscriptionVisitor;
 import org.sonar.plugins.java.api.semantic.MethodMatchers;
-import org.sonar.plugins.java.api.tree.*;
+import org.sonar.plugins.java.api.tree.MethodInvocationTree;
+import org.sonar.plugins.java.api.tree.MethodReferenceTree;
+import org.sonar.plugins.java.api.tree.NewClassTree;
+import org.sonar.plugins.java.api.tree.Tree;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractMethodDetection extends IssuableSubscriptionVisitor {
 

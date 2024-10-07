@@ -20,7 +20,7 @@ class DisallowInStringArgumentsRuleTest {
     void testHasIssues() {
         var check = new DisallowInStringArgumentsRule();
         check.setTargetsProperty("java.util.Set#of");
-        check.setForbiddenString("test"         );
+        check.setForbiddenString("test");
 
         CheckVerifier.newVerifier()
                 .onFile("src/test/files/DisallowInStringArgumentsRuleSample.java")

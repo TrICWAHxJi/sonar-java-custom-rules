@@ -66,7 +66,7 @@ public class DisallowInStringArgumentsRule extends AbstractDisallowRule {
                 String value = valueWithQuotes.substring(1, valueWithQuotes.length() - 1);
                 if (value.contains(forbiddenString)) {
                     // TODO: report on every argument of this method
-                        reportIssue(CommonUtils.methodName(mit), "Remove this forbidden call");
+                    reportIssue(CommonUtils.methodName(mit), "Remove this forbidden call");
                     return;
                 }
             }

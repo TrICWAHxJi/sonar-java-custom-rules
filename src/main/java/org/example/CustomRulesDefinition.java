@@ -1,12 +1,12 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Set;
-
 import org.sonar.api.SonarRuntime;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonarsource.analyzer.commons.RuleMetadataLoader;
+
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Set;
 
 public class CustomRulesDefinition implements RulesDefinition {
 
