@@ -1,15 +1,10 @@
-/*
- * Copyright (C) 2012-2024 SonarSource SA - mailto:info AT sonarsource DOT com
- * This code is released under [MIT No Attribution](https://opensource.org/licenses/MIT-0) license.
- */
-package org.example.rule;
+package org.example.rules;
 
 import org.sonar.plugins.java.api.IssuableSubscriptionVisitor;
 import org.sonar.plugins.java.api.semantic.MethodMatchers;
 import org.sonar.plugins.java.api.tree.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractMethodDetection extends IssuableSubscriptionVisitor {
 
@@ -54,21 +49,10 @@ public abstract class AbstractMethodDetection extends IssuableSubscriptionVisito
         // Do nothing by default
     }
 
-    private MethodMatchers matchers() {
+    protected MethodMatchers matchers() {
         if (matchers == null) {
             matchers = getMethodInvocationMatchers();
         }
         return matchers;
-    }
-
-    protected static IdentifierTree methodName(MethodInvocationTree mit) {
-        ExpressionTree methodSelect = mit.methodSelect();
-        IdentifierTree id;
-        if (methodSelect.is(Tree.Kind.IDENTIFIER)) {
-            id = (IdentifierTree) methodSelect;
-        } else {
-            id = ((MemberSelectExpressionTree) methodSelect).identifier();
-        }
-        return id;
     }
 }

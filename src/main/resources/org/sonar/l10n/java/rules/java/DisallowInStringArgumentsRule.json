@@ -1,5 +1,5 @@
 {
-  "title": "Disallow methods calls for specified types",
+  "title": "Disallow value in string arguments of method calls for specified types",
   "type": "Bug",
   "status": "ready",
   "tags": [

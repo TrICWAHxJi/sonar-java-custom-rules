@@ -4,7 +4,7 @@
 
 * `cd <project directory>`
 * `mvn clean install`
-* `cp ./target/sonar-java-custom-rules-1.0.0.jar ./volumes/plugins/`
+* `cp ./target/sonar-java-custom-rules-0.0.1.jar ./volumes/plugins/`
 * `docker compose up`
 
 ## Debug

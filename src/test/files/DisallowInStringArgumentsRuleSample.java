@@ -7,12 +7,12 @@ class CustomCheckSample {
         Inner inner = new Inner();
         inner.someMethod();
         List.of();
-        Set.of(); // Noncompliant {{Remove this forbidden call}}
+        Set.of();
     }
 
     public void bar() {
-        //JavaScriptExecutor.click("button");
-        "".trim(); // Noncompliant {{Remove this forbidden call}}
+        Set.of("test"); // Noncompliant {{Remove this forbidden call}}
+        "".trim();
     }
 
     private int baz() {

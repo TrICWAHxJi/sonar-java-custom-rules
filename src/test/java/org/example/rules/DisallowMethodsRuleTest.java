@@ -1,4 +1,4 @@
-package org.example.rule;
+package org.example.rules;
 
 import org.junit.jupiter.api.Test;
 import org.sonar.java.checks.verifier.CheckVerifier;
@@ -8,8 +8,7 @@ class DisallowMethodsRuleTest {
     @Test
     void testHasNoIssues() {
         var check = new DisallowMethodsRule();
-        check.setTypesProperty("java.util.List");
-        check.setMethodsProperty("of1");
+        check.setTargetsProperty("java.util.List#of1");
 
         CheckVerifier.newVerifier()
                 .onFile("src/test/files/DisallowMethodsRuleSample.java")
@@ -20,13 +19,14 @@ class DisallowMethodsRuleTest {
     @Test
     void testHasIssues() {
         var check = new DisallowMethodsRule();
-        check.setTypesProperty("java.lang.String, java.util.List");
-        check.setMethodsProperty("trim,of");
+        check.setTargetsProperty("java.lang.String#trim;java.util.Set#of");
 
         CheckVerifier.newVerifier()
                 .onFile("src/test/files/DisallowMethodsRuleSample.java")
                 .withCheck(check)
                 .verifyIssues();
     }
+
+    // TODO: test exclusions        
 
 }

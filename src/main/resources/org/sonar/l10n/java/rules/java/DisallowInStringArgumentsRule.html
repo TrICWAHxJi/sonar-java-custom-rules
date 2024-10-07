@@ -1,0 +1,13 @@
+<p>Disallow value in string arguments of method calls for specified types.</p>
+
+<h2>Given parameters: targets - java.util.Set#of, forbiddenString - test</h2>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+class MyClass {
+  int doSomething(int a) {
+    Set.of("test") // Noncompliant
+    return 42;
+  }
+}
+</pre>
