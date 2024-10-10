@@ -30,11 +30,11 @@
 ### Пример:
 
 * Заходим на страницу template "Disallow methods calls for specified types"
-![img1.png](images/img1.png)
+![img0.png](images/img0.png)
 * Нажимаем Create в Custom Rules
 * Указываем нужные параметры
-![img2.png](images/img2.png)
+![img1.png](images/img1.png)
 * Переходи на страницу нового правила, кликнув на название
-![img3.png](images/img3.png)
+![img2.png](images/img2.png)
 * Активируем правило кнопкой Activate
-![img4.png](images/img4.png)
+![img3.png](images/img3.png)

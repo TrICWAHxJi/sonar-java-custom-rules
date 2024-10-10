@@ -27,4 +27,46 @@ class DisallowInStringArgumentsRuleTest {
                 .withCheck(check)
                 .verifyIssues();
     }
+
+    @Test
+    void testExclusions() {
+        var check = new DisallowInStringArgumentsRule();
+        check.setTargetsProperty("java.util.Set#of");
+        check.setForbiddenString("test");
+
+        check.setExclusionsProperty("org.example.CustomCheckSample#bar");
+
+        CheckVerifier.newVerifier()
+                .onFile("src/test/files/DisallowInStringArgumentsRuleSample.java")
+                .withCheck(check)
+                .verifyNoIssues();
+    }
+
+    @Test
+    void shouldExcludeOnlyByMethod() {
+        var check = new DisallowInStringArgumentsRule();
+        check.setTargetsProperty("java.util.Set#of");
+        check.setForbiddenString("test");
+
+        check.setExclusionsProperty("#bar");
+
+        CheckVerifier.newVerifier()
+                .onFile("src/test/files/DisallowInStringArgumentsRuleSample.java")
+                .withCheck(check)
+                .verifyNoIssues();
+    }
+
+    @Test
+    void shouldExcludeOnlyByClass() {
+        var check = new DisallowInStringArgumentsRule();
+        check.setTargetsProperty("java.util.Set#of");
+        check.setForbiddenString("test");
+
+        check.setExclusionsProperty("org.example.CustomCheckSample");
+
+        CheckVerifier.newVerifier()
+                .onFile("src/test/files/DisallowInStringArgumentsRuleSample.java")
+                .withCheck(check)
+                .verifyNoIssues();
+    }
 }

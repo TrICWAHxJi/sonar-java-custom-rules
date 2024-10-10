@@ -18,6 +18,10 @@ public class Target {
             throw new IllegalArgumentException("Empty property");
         }
 
+        if (!s.contains("#")) {
+            return new Target(s, Set.of());
+        }
+
         String[] parts = s.split("#");
 
         if (parts.length < 1) {

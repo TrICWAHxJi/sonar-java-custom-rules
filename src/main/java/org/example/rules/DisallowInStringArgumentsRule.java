@@ -32,18 +32,18 @@ public class DisallowInStringArgumentsRule extends AbstractDisallowRule {
 
     @Override
     protected MethodMatchers getMethodInvocationMatchers() {
-        if (targets().isEmpty()) {
+        if (getTargets().isEmpty()) {
             return MethodMatchers.none();
         }
 
         MethodMatchers.TypeBuilder typeBuilder = MethodMatchers.create();
         MethodMatchers.NameBuilder nameBuilder;
-        if (targets().isEmpty()) {
+        if (getTargets().isEmpty()) {
             nameBuilder = typeBuilder.ofAnyType();
         } else {
-            nameBuilder = typeBuilder.ofTypes(targets().stream().map(Target::getClassName).toArray(String[]::new));
+            nameBuilder = typeBuilder.ofTypes(getTargets().stream().map(Target::getClassName).toArray(String[]::new));
         }
-        MethodMatchers.ParametersBuilder parametersBuilder = nameBuilder.names(targets().stream().flatMap(t -> t.getMethods().stream()).toArray(String[]::new));
+        MethodMatchers.ParametersBuilder parametersBuilder = nameBuilder.names(getTargets().stream().flatMap(t -> t.getMethods().stream()).toArray(String[]::new));
 
         return parametersBuilder.withAnyParameters().build();
     }
@@ -74,20 +74,12 @@ public class DisallowInStringArgumentsRule extends AbstractDisallowRule {
     }
 
     @Override
-    protected Set<Target> targets() {
-        if (targets == null) {
-            targets = PropertyParsers.parseTargets(targetsProperty);
-        }
-
-        return targets;
+    protected Set<Target> buildTargets() {
+        return PropertyParsers.parseTargets(targetsProperty);
     }
 
     @Override
-    protected Set<Target> exclusions() {
-        if (exclusions == null) {
-            exclusions = PropertyParsers.parseTargets(exclusionsProperty);
-        }
-
-        return exclusions;
+    protected Set<Target> buildExclusions() {
+        return PropertyParsers.parseTargets(exclusionsProperty);
     }
 }

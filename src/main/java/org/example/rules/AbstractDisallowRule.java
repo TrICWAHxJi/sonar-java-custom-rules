@@ -3,51 +3,85 @@ package org.example.rules;
 import org.example.util.Target;
 import org.sonar.plugins.java.api.semantic.Symbol;
 import org.sonar.plugins.java.api.semantic.Type;
+import org.sonar.plugins.java.api.tree.ClassTree;
 import org.sonar.plugins.java.api.tree.MethodInvocationTree;
 import org.sonar.plugins.java.api.tree.MethodTree;
 import org.sonar.plugins.java.api.tree.Tree;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class AbstractDisallowRule extends AbstractMethodDetection {
 
-    // TODO: make private
-    protected Set<Target> targets;
-    protected Set<Target> exclusions;
+    private Set<Target> targets;
+    private Set<Target> exclusions;
 
-    protected abstract Set<Target> targets();
+    protected abstract Set<Target> buildTargets();
 
-    protected abstract Set<Target> exclusions();
+    protected abstract Set<Target> buildExclusions();
+
+    protected Set<Target> getTargets() {
+        if (targets == null) {
+            targets = buildTargets();
+        }
+
+        return targets;
+    }
+
+    protected Set<Target> getExclusions() {
+        if (exclusions == null) {
+            exclusions = buildExclusions();
+        }
+
+        return exclusions;
+    }
 
     protected boolean inExclusions(MethodInvocationTree mit) {
-        if (exclusions().isEmpty()) {
+        if (getExclusions().isEmpty()) {
             return false;
         }
 
-        Optional<String> className = getClassName(mit);
+        Optional<String> enclosingClassName = getEnclosingClassName(mit);
         Optional<String> enclosingMethodName = getEnclosingMethodName(mit);
 
-        boolean checkClass = exclusions().stream()
+        Set<String> exclusionClasses = getExclusions().stream()
                 .map(Target::getClassName)
                 .filter(s -> !s.isBlank())
-                // TODO: refactor
-                .anyMatch(cn -> className.map(cn::equals).orElse(false));
+                .collect(Collectors.toSet());
 
-        boolean checkExclusionMethod = exclusions().stream()
+        Set<String> exclusionMethods = getExclusions().stream()
                 .flatMap(t -> t.getMethods().stream())
                 .filter(s -> !s.isBlank())
+                .collect(Collectors.toSet());
+
+        boolean checkExclusionClass = exclusionClasses.stream()
+                // TODO: refactor
+                .anyMatch(cn -> enclosingClassName.map(cn::equals).orElse(false));
+
+        boolean checkExclusionMethod = exclusionMethods.stream()
                 // TODO: refactor
                 .anyMatch(m -> enclosingMethodName.map(m::equals).orElse(false));
 
-        // TODO: if not classes, check only methods and if no methods check only class
-        return checkClass && checkExclusionMethod;
+        if (exclusionClasses.isEmpty()) {
+            return checkExclusionMethod;
+        }
+
+        if (exclusionMethods.isEmpty()) {
+            return checkExclusionClass;
+        }
+
+        return checkExclusionClass && checkExclusionMethod;
     }
 
-    private Optional<String> getClassName(MethodInvocationTree mit) {
-        return Optional.ofNullable(mit)
-                .map(MethodInvocationTree::methodSymbol)
-                .map(Symbol::owner)
+    private Optional<String> getEnclosingClassName(MethodInvocationTree mit) {
+        Tree parent = mit;
+        while (parent != null && !parent.is(Tree.Kind.CLASS)) {
+            parent = parent.parent();
+        }
+
+        return Optional.ofNullable(parent).map(p -> (ClassTree) p)
+                .map(ClassTree::symbol)
                 .map(Symbol::type)
                 .map(Type::fullyQualifiedName);
     }

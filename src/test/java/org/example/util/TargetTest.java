@@ -19,4 +19,24 @@ class TargetTest {
 
         assertEquals(expectedTarget, actualTarget);
     }
+
+    @Test
+    void shouldReturnOnlyClass() {
+        String property = "com.example.Class";
+
+        var expectedTarget = new Target("com.example.Class", Set.of());
+        var actualTarget = Target.fromString(property);
+
+        assertEquals(expectedTarget, actualTarget);
+    }
+
+    @Test
+    void shouldReturnOnlyMethod() {
+        String property = "#bar";
+
+        var expectedTarget = new Target("", Set.of("bar"));
+        var actualTarget = Target.fromString(property);
+
+        assertEquals(expectedTarget, actualTarget);
+    }
 }
